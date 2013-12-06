@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<style>
+body { font: "SegoeUI", "Segoe UI", "HelveticaNeue", "Helvetica Neue", "Trebuchet MS", "Verdana"; font-size: 20px; }
+div#copy { font-size: 8px; }
+</style>
+
+<div id="chartdiv" style="width:100%; height:400px;"></div>
+<div id="rainchartdiv" style="width:100%; height:150px;"></div>
+<div id="snow">
+  Lunta <span class="value">xx cm</span>
+</div>
+<div id="roadtemp">
+  Tie <span class="value">xx &deg;</span>
+</div>
+<div id="copy">
+ Aineiston alkuperäislähde Ilmatieteen laitos tai Liikennevirasto, hakuajankohta <span class="date">tänään</span>.
+</div>
+<script src="lib/underscore-min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="lib/jquery.xml2json.js"></script>
+
+        <script src="lib/amcharts/amcharts.js" type="text/javascript"></script>
+        <script src="lib/amcharts/serial.js" type="text/javascript"></script>
+
+<script src="weatherstation.js" charset="UTF-8"></script>
+<script>
+$(function() {
+        var ws = new weatherstation();
+        ws.init();
+      });
+</script>
+
+</body>
+</html>
