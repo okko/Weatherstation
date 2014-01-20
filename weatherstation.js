@@ -126,6 +126,7 @@ var weatherstation = function () {
             var dataprovider = _.union(obs.t2m, forec.temperature);
             // SERIAL CHART
             chart = new AmCharts.AmSerialChart();
+            chart.brrr = function() { };
             chart.pathToImages = "lib/amcharts/images/";
             chart.dataProvider = dataprovider;
             chart.dataDateFormat = '___ MMM DD YYYY JJ:NN:SS GMT+0_00 (___)';
@@ -193,6 +194,7 @@ var weatherstation = function () {
             var dataprovider = _.union(obs.r_1h, forec.precipitation1h);
             // SERIAL CHART
             chart = new AmCharts.AmSerialChart();
+            chart.brrr = function() { };
             chart.pathToImages = "lib/amcharts/images/";
             chart.dataProvider = dataprovider;
             chart.dataDateFormat = '___ MMM DD YYYY JJ:NN:SS GMT+0_00 (___)';
