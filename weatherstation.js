@@ -115,6 +115,7 @@ var weatherstation = function () {
     };
 
     var updateUIRoad = function () {
+        if (!road || !road.trs || road.trs.length == 0) return;
         var latest = road.trs[road.trs.length-1];
         $('#roadtemp .value').html(parseInt(latest.value) + '&deg;');
         $('#roadtemp .at').html(timeString(latest.time));
