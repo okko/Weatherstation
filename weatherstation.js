@@ -111,7 +111,12 @@ var weatherstation = function () {
     };
 
     var updateUISnow = function () {
-        $('#snow .value').html(parseInt(obs.snow_aws[23].value) + ' cm');
+        if (!obs.snow_aws || obs.snow_aws.length < 24) return;
+        var snow_value = parseInt(obs.snow_aws[23].value);
+        if (isNaN(snow_value)) {
+            snow_value = 0;
+        }
+        $('#snow .value').html(snow_value + ' cm');
     };
 
     var updateUIRoad = function () {
