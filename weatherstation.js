@@ -1,13 +1,12 @@
 var weatherstation = function () {
     "use strict";
 
-    var apikey = 'PUT-IT-HERE';
     var fmisid=101004; // Kumpula, Helsinki
     var geoid=6945765; // Arabianranta, Helsinki
 
-    var observations_baseurl = 'http://data.fmi.fi/fmi-apikey/'+apikey+'/wfs?request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&timestep=30&fmisid=';
-    var forecast_baseurl = 'http://data.fmi.fi/fmi-apikey/'+apikey+'/wfs?request=getFeature&storedquery_id=fmi::forecast::hirlam::surface::point::timevaluepair&geoid=';
-    var roadstatus_baseurl = 'http://data.fmi.fi/fmi-apikey/'+apikey+'/wfs?request=getFeature&storedquery_id=livi::observations::road::default::timevaluepair&place=Helsinki';
+    var observations_baseurl = 'https://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&timestep=30&fmisid=';
+    var forecast_baseurl = 'https://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::forecast::harmonie::surface::point::timevaluepair&geoid=';
+    var roadstatus_baseurl = 'https://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=livi::observations::road::default::timevaluepair&place=Helsinki';
 
     var obs = {}; // observations
     var forec = {}; // forecast
@@ -71,7 +70,8 @@ var weatherstation = function () {
                         }
                         return (pointElem.MeasurementTVP);
                 });
-            });
+            }
+        );
     };
 
     var timeString = function (date) {
@@ -91,11 +91,13 @@ var weatherstation = function () {
                         }
                         return (pointElem.MeasurementTVP);
                 });
-            });
+            }
+        );
     };
 
     var processRoadStatus = function(data) {
         var road_data = $.xml2json(data);
+        if (!road_data.member) { return; }
         $.each(road_data.member, function( memberIndex, member ) {
                 var series = member.PointTimeSeriesObservation.result.MeasurementTimeseries;
                 var $series = $(series);
@@ -107,11 +109,12 @@ var weatherstation = function () {
                         }
                         return (pointElem.MeasurementTVP);
                 });
-            });
+            }
+        );
     };
 
     var updateUISnow = function () {
-        if (!obs.snow_aws || obs.snow_aws.length < 24) return;
+        if (!obs || !obs.snow_aws || obs.snow_aws.length < 24) return;
         var snow_value = parseInt(obs.snow_aws[23].value);
         if (isNaN(snow_value)) {
             snow_value = 0;
@@ -138,7 +141,7 @@ var weatherstation = function () {
             chart.dataDateFormat = '___ MMM DD YYYY JJ:NN:SS GMT+0_00 (___)';
             chart.marginLeft = 10;
             chart.categoryField = 'time';
-            
+
             var categoryAxis = chart.categoryAxis;
 
             categoryAxis.parseDates = true; // true;
@@ -154,7 +157,7 @@ var weatherstation = function () {
             valueAxis.dashLength = 3;
             chart.addValueAxis(valueAxis);
 
-            // GRAPH                
+            // GRAPH
             graph = new AmCharts.AmGraph();
             graph.type = "smoothedLine";
             graph.lineColor = "#c1453d";
@@ -187,7 +190,7 @@ var weatherstation = function () {
             trendLine.finalValue = 40;
             trendLine.lineColor = "#FF0000";
             chart.addTrendLine(trendLine);
-            
+
             chart.write("chartdiv");
     };
 
@@ -197,7 +200,7 @@ var weatherstation = function () {
     var updateRainChart = function () {
             var chart;
             var graph;
-            var dataprovider = _.union(obs.r_1h, forec.precipitation1h);
+            var dataprovider = _.union(obs.r_1h, forec.precipitationamount);
             // SERIAL CHART
             chart = new AmCharts.AmSerialChart();
             chart.brrr = function() { };
@@ -206,7 +209,7 @@ var weatherstation = function () {
             chart.dataDateFormat = '___ MMM DD YYYY JJ:NN:SS GMT+0_00 (___)';
             chart.marginLeft = 10;
             chart.categoryField = 'time';
-            
+
             var categoryAxis = chart.categoryAxis;
             categoryAxis.categoryFunction = function (category, dataItem, categoryAxis) {
                 return new Date(dataItem.time - 0*60000); // change 0 to 30 to substract 30 minutes because the FMI value is the rain amount of the previous hour, substracting 30 minutes put it in the middle of that hour
@@ -225,7 +228,7 @@ var weatherstation = function () {
             valueAxis.dashLength = 3;
             chart.addValueAxis(valueAxis);
 
-            // GRAPH                
+            // GRAPH
             graph = new AmCharts.AmGraph();
             graph.type = "step";
             graph.lineColor = "#c1453d";
@@ -258,7 +261,7 @@ var weatherstation = function () {
             trendLine.finalValue = 40;
             trendLine.lineColor = "#FF0000";
             chart.addTrendLine(trendLine);
-            
+
             chart.write("rainchartdiv");
     };
 
@@ -281,6 +284,3 @@ var weatherstation = function () {
         }
     };
 };
-
-
-
